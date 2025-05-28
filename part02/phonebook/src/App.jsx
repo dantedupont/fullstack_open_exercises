@@ -4,6 +4,7 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import axios from 'axios'
 import noteService from './services/notes'
+import Notification from './Notification'
 
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     noteService
@@ -36,6 +38,10 @@ const App = () => {
         .then(returnedContact => {
           setPersons(persons.concat(returnedContact))
         })
+      setMessage(`${contactObject.name} has been added`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
     setNewName('')
     setNewPhone('')
@@ -59,6 +65,11 @@ const App = () => {
       .then(deleted => {
         setPersons(persons.filter(person => person.id !== deleted.id))
       })
+
+      setMessage(`${nameToBeDeleted} has been deleted`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     } else {
         return
     } 
@@ -67,6 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
         <Filter filter={filter} handleFilter={handleFilter}/>
       <h2>Add New</h2>
         <PersonForm 
